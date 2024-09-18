@@ -46,3 +46,15 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: mmp052/simulado-ac:${{ github.sha }}
+
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST_TEST }}
+          username: "ubuntu"
+          key: ${{ secrets.KEY_TEST }}
+          port: 22
+          script: |
+            docker stop simulado-ac
+            docker rm --force simulado-ac
+            docker run -d -p 8080:8080 --network=rede --name simulado-ac mmp052/simulado-ac:${{ github.sha }}
